@@ -16,9 +16,9 @@ function Slider({ label, value, onChange, min, max, step = 1, unit = "", formatt
   const displayVal = formatter ? formatter(value) : `${value}${unit}`;
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 13 }}>
+      <div className="slider-row" style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 13 }}>
         <span style={{ color: "#8a8f98", fontFamily: "'Noto Sans JP', sans-serif" }}>{label}</span>
-        <span style={{ color: "#e8eaed", fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", fontSize: 13 }}>{displayVal}</span>
+        <span style={{ color: "#e8eaed", fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, flexShrink: 0 }}>{displayVal}</span>
       </div>
       <input
         type="range" min={min} max={max} step={step} value={value}
@@ -32,7 +32,7 @@ function Slider({ label, value, onChange, min, max, step = 1, unit = "", formatt
 // === Toggle ===
 function Toggle({ label, value, onChange }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, fontSize: 13 }}>
+    <div className="slider-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, fontSize: 13 }}>
       <span style={{ color: "#8a8f98", fontFamily: "'Noto Sans JP', sans-serif" }}>{label}</span>
       <div
         onClick={() => onChange(!value)}
@@ -55,20 +55,21 @@ function Toggle({ label, value, onChange }) {
 // === Section ===
 function Section({ title, icon, children, collapsed, onToggle }) {
   return (
-    <div style={{
+    <div className="section-block" style={{
       background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: "14px 16px",
       marginBottom: 12, border: "1px solid rgba(255,255,255,0.06)"
     }}>
       <div
         onClick={onToggle}
+        className="section-header"
         style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
           cursor: "pointer", userSelect: "none"
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 16 }}>{icon}</span>
-          <span style={{ color: "#e8eaed", fontWeight: 600, fontSize: 14, fontFamily: "'Noto Sans JP', sans-serif" }}>{title}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+          <span style={{ fontSize: 16, flexShrink: 0 }}>{icon}</span>
+          <span className="section-title" style={{ color: "#e8eaed", fontWeight: 600, fontSize: 14, fontFamily: "'Noto Sans JP', sans-serif" }}>{title}</span>
         </div>
         <span style={{ color: "#8a8f98", fontSize: 12, transition: "transform 0.3s", transform: collapsed ? "rotate(-90deg)" : "rotate(0)" }}>▼</span>
       </div>
@@ -725,7 +726,7 @@ export default function App() {
           </div>
 
           {/* Charts */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }} className="dashboard-area">
             {/* 純資産推移 */}
             <div style={{
               background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: "18px 14px",
