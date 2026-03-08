@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import "./App.css";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, BarChart, Bar, ComposedChart, Line } from "recharts";
 
 import { childCostPerYear } from "./calc/childCost.js";
@@ -417,9 +418,9 @@ export default function App() {
         .fade-in { animation: fadeIn 0.5s ease-out; }
       `}</style>
 
-      <div style={{ width: "100%", margin: 0, padding: "20px 16px", boxSizing: "border-box" }}>
+      <div style={{ width: "100%", margin: 0, padding: "20px 16px", boxSizing: "border-box" }} className="app-container">
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 24 }} className="fade-in">
+        <div style={{ textAlign: "center", marginBottom: 24 }} className="fade-in app-header">
           <h1 style={{
             fontSize: 22, fontWeight: 700, color: "#e8eaed", margin: 0,
             letterSpacing: 1, fontFamily: "'Noto Sans JP', sans-serif"
@@ -430,7 +431,7 @@ export default function App() {
         </div>
 
         {/* KPI Cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 20 }} className="fade-in">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 20 }} className="fade-in kpi-grid">
           {[
             { label: "生涯年収（額面）", value: fmtYen(lifetimeGross), sub: `${startAge}〜85歳の合計`, color: "#8a8f98" },
             { label: "生涯年収（手取り）", value: fmtYen(lifetimeNet), sub: `${startAge}〜85歳の合計`, color: "#4ecdc4" },
@@ -439,21 +440,21 @@ export default function App() {
             { label: "85歳時純資産", value: endData ? fmtYen(endData.純資産) : "-", sub: endData?.純資産 >= 0 ? "余裕あり" : "⚠ 資産不足", color: endData?.純資産 >= 0 ? "#45b7aa" : "#ff6b6b" },
             { label: fireAge ? "FIRE可能" : "FIRE", value: fireAge ? `${fireAge.age}歳` : "到達困難", sub: "支出25年分", color: fireAge ? "#ffd93d" : "#6b7280" },
           ].map((kpi, i) => (
-            <div key={i} style={{
+            <div key={i} className="kpi-card" style={{
               background: "rgba(255,255,255,0.04)", borderRadius: 12, padding: "14px 14px",
               border: `1px solid ${kpi.color}22`, position: "relative", overflow: "hidden"
             }}>
               <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: kpi.color, opacity: 0.6 }} />
-              <div style={{ fontSize: 11, color: "#8a8f98", marginBottom: 4 }}>{kpi.label}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: kpi.color, fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</div>
+              <div className="kpi-label" style={{ fontSize: 11, color: "#8a8f98", marginBottom: 4 }}>{kpi.label}</div>
+              <div className="kpi-value" style={{ fontSize: 18, fontWeight: 700, color: kpi.color, fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</div>
               <div style={{ fontSize: 10, color: "#6b7280", marginTop: 2 }}>{kpi.sub}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 16, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 16, alignItems: "start" }} className="main-layout">
           {/* Control Panel */}
-          <div style={{ maxHeight: "calc(100vh - 160px)", overflowY: "auto", paddingRight: 4 }}>
+          <div style={{ maxHeight: "calc(100vh - 160px)", overflowY: "auto", paddingRight: 4 }} className="control-panel">
             <Section title="初期設定" icon="⏱️" collapsed={sections.initial} onToggle={() => toggleSection("initial")}>
               <Slider label="開始年齢" value={startAge} onChange={setStartAge} min={20} max={70} unit="歳" />
               <Slider label="初期遺産" value={initialAssets} onChange={setInitialAssets} min={0} max={5000} step={50} unit="万円" />
@@ -729,9 +730,10 @@ export default function App() {
             <div style={{
               background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: "18px 14px",
               border: "1px solid rgba(255,255,255,0.06)"
-            }} className="fade-in">
+            }} className="fade-in chart-container">
               <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px 4px", color: "#e8eaed" }}>資産・負債推移</h3>
-              <ResponsiveContainer width="100%" height={320}>
+              <div className="chart-wrapper-large" style={{ width: "100%", height: 320 }}>
+              <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                   <defs>
                     <linearGradient id="gAsset" x1="0" y1="0" x2="0" y2="1">
@@ -756,15 +758,17 @@ export default function App() {
                   <Line type="monotone" dataKey="純資産" stroke="#7c83ff" strokeWidth={2.5} dot={false} strokeDasharray="6 3" />
                 </ComposedChart>
               </ResponsiveContainer>
+              </div>
             </div>
 
             {/* 収支推移 */}
             <div style={{
               background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: "18px 14px",
               border: "1px solid rgba(255,255,255,0.06)"
-            }} className="fade-in">
+            }} className="fade-in chart-container">
               <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px 4px", color: "#e8eaed" }}>年間収支内訳</h3>
-              <ResponsiveContainer width="100%" height={260}>
+              <div className="chart-wrapper" style={{ width: "100%", height: 260 }}>
+              <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                   <XAxis dataKey="age" tick={{ fontSize: 11, fill: "#6b7280" }} tickLine={false} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} unit="歳" />
@@ -781,15 +785,16 @@ export default function App() {
                   <Line type="monotone" dataKey="年収手取り" stroke="#4ecdc4" strokeWidth={2.5} dot={false} />
                 </ComposedChart>
               </ResponsiveContainer>
+              </div>
             </div>
 
             {/* Detail Table */}
             <div style={{
               background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: "18px 14px",
               border: "1px solid rgba(255,255,255,0.06)", overflowX: "auto"
-            }} className="fade-in">
+            }} className="fade-in detail-table-wrapper">
               <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px 4px", color: "#e8eaed" }}>年齢別詳細（5年刻み）</h3>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }} className="detail-table">
                 <thead>
                   <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
                     {["年齢", "手取り", "生活費", "特別支出", "支出計", "貯蓄", "5年間投資額", "金融資産", buyProperty && "不動産", buyProperty && "負債", "純資産"].filter(Boolean).map((h, i) => (
